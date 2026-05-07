@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fornecedores — Inventário Embarcados</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-tag">// sistema</div>
+      <div class="logo-title">Estoque<span>Embarcados</span></div>
+    </div>
+    <nav>
+      <div class="nav-section">// navegação</div>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">⬡</span> Dashboard
+      </a>
+      <a href="usuarios.html" class="nav-item">
+        <span class="nav-icon">◈</span> Usuários
+      </a>
+      <a href="componentes.html" class="nav-item">
+        <span class="nav-icon">◧</span> Componentes
+      </a>
+      <a href="fornecedores.html" class="nav-item active">
+        <span class="nav-icon">◫</span> Fornecedores
+        <span class="status-dot"></span>
+      </a>
+      <a href="movimentacoes.html" class="nav-item">
+        <span class="nav-icon">⇅</span> Movimentações
+      </a>
+      <a href="componentes_fornecedores.html" class="nav-item">
+        <span class="nav-icon">⬡</span> Comp. × Fornecedor
+        </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">
+        <span>// fornecedores</span>
+        Fornecedores
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" onclick="abrirModal()">+ Novo Fornecedor</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section-header">
+        <div class="section-label">// lista de fornecedores</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CNPJ</th>
+              <th>Email</th>
+              <th>Telefone</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-fornecedores">
+            <tr><td colspan="6" style="color:var(--muted);text-align:center">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-title">
+        <span id="modal-tag">// novo</span>
+        <span id="modal-titulo">Novo Fornecedor</span>
+      </div>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="campo-nome" placeholder="Nome da empresa"/>
+      </div>
+      <div class="form-group">
+        <label>CNPJ</label>
+        <input type="text" id="campo-cnpj" placeholder="00000000000000" maxlength="14"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="campo-email" placeholder="contato@empresa.com"/>
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" id="campo-telefone" placeholder="00000000000" maxlength="11"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/fornecedores.js"></script>
+</body>
+</html>

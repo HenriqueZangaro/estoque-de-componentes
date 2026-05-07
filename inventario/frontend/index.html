@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventário Embarcados</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-tag">// sistema</div>
+      <div class="logo-title">Estoque<span>Embarcados</span></div>
+    </div>
+    <nav>
+      <div class="nav-section">// navegação</div>
+      <a href="index.html" class="nav-item active">
+        <span class="nav-icon">⬡</span> Dashboard
+        <span class="status-dot"></span>
+      </a>
+      <a href="usuarios.html" class="nav-item">
+        <span class="nav-icon">◈</span> Usuários
+      </a>
+      <a href="componentes.html" class="nav-item">
+        <span class="nav-icon">◧</span> Componentes
+      </a>
+      <a href="fornecedores.html" class="nav-item">
+        <span class="nav-icon">◫</span> Fornecedores
+      </a>
+      <a href="movimentacoes.html" class="nav-item">
+        <span class="nav-icon">⇅</span> Movimentações
+      </a>
+      <a href="componentes_fornecedores.html" class="nav-item">
+        <span class="nav-icon">⬡</span> Comp. × Fornecedor
+        </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">
+        <span>// dashboard</span>
+        Visão Geral
+      </div>
+      <div class="topbar-right">
+        <div class="api-badge">
+          <span>●</span> API localhost:8000
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Componentes</div>
+          <div class="stat-value" id="stat-componentes">—</div>
+          <div class="stat-sub">tipos cadastrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Fornecedores</div>
+          <div class="stat-value" id="stat-fornecedores">—</div>
+          <div class="stat-sub">fornecedores ativos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Usuários</div>
+          <div class="stat-value" id="stat-usuarios">—</div>
+          <div class="stat-sub">usuários cadastrados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Movimentações</div>
+          <div class="stat-value" id="stat-movimentacoes">—</div>
+          <div class="stat-sub">registros no histórico</div>
+        </div>
+      </div>
+
+      <div class="modules-title">// módulos do sistema</div>
+      <div class="modules-grid">
+        <a href="usuarios.html" class="module-card">
+          <span class="module-arrow">→</span>
+          <span class="module-icon">◈</span>
+          <div class="module-name">Usuários</div>
+          <div class="module-desc">Gerencie os usuários que acessam e operam o sistema de inventário.</div>
+          <div class="module-endpoints">
+            <span class="badge">GET</span>
+            <span class="badge green">POST</span>
+            <span class="badge orange">PUT</span>
+            <span class="badge red">DELETE</span>
+          </div>
+        </a>
+        <a href="componentes.html" class="module-card">
+          <span class="module-arrow">→</span>
+          <span class="module-icon">◧</span>
+          <div class="module-name">Componentes</div>
+          <div class="module-desc">Cadastre resistores, capacitores, microcontroladores e outros componentes.</div>
+          <div class="module-endpoints">
+            <span class="badge">GET</span>
+            <span class="badge green">POST</span>
+            <span class="badge orange">PUT</span>
+            <span class="badge red">DELETE</span>
+          </div>
+        </a>
+        <a href="fornecedores.html" class="module-card">
+          <span class="module-arrow">→</span>
+          <span class="module-icon">◫</span>
+          <div class="module-name">Fornecedores</div>
+          <div class="module-desc">Gerencie fornecedores e vincule-os aos componentes do estoque.</div>
+          <div class="module-endpoints">
+            <span class="badge">GET</span>
+            <span class="badge green">POST</span>
+            <span class="badge orange">PUT</span>
+            <span class="badge red">DELETE</span>
+          </div>
+        </a>
+        <a href="movimentacoes.html" class="module-card">
+          <span class="module-arrow">→</span>
+          <span class="module-icon">⇅</span>
+          <div class="module-name">Movimentações</div>
+          <div class="module-desc">Registre entradas e saídas. Histórico completo de movimentações.</div>
+          <div class="module-endpoints">
+            <span class="badge">GET</span>
+            <span class="badge green">POST</span>
+          </div>
+        </a>
+        <a href="componentes.html" class="module-card">
+          <span class="module-arrow">→</span>
+          <span class="module-icon">⬡</span>
+          <div class="module-name">Comp. × Fornecedor</div>
+          <div class="module-desc">Vincule componentes aos seus fornecedores. Relação muitos-para-muitos.</div>
+          <div class="module-endpoints">
+            <span class="badge">GET</span>
+            <span class="badge green">POST</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/index.js"></script>
+</body>
+</html>

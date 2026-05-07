@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comp. × Fornecedor — Inventário Embarcados</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-tag">// sistema</div>
+      <div class="logo-title">Estoque<span>Embarcados</span></div>
+    </div>
+    <nav>
+      <div class="nav-section">// navegação</div>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">⬡</span> Dashboard
+      </a>
+      <a href="usuarios.html" class="nav-item">
+        <span class="nav-icon">◈</span> Usuários
+      </a>
+      <a href="componentes.html" class="nav-item">
+        <span class="nav-icon">◧</span> Componentes
+      </a>
+      <a href="fornecedores.html" class="nav-item">
+        <span class="nav-icon">◫</span> Fornecedores
+      </a>
+      <a href="movimentacoes.html" class="nav-item">
+        <span class="nav-icon">⇅</span> Movimentações
+      </a>
+      <a href="componentes_fornecedores.html" class="nav-item active">
+        <span class="nav-icon">⬡</span> Comp. × Fornecedor
+        <span class="status-dot"></span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">
+        <span>// relações</span>
+        Componentes × Fornecedores
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" onclick="abrirModal()">+ Nova Relação</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section-header">
+        <div class="section-label">// vínculos cadastrados</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Componente</th>
+              <th>Fornecedor</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-relacoes">
+            <tr><td colspan="2" style="color:var(--muted);text-align:center">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-title">
+        <span>// nova relação</span>
+        Vincular Componente ao Fornecedor
+      </div>
+      <div class="form-group">
+        <label>Componente</label>
+        <select id="campo-componente"></select>
+      </div>
+      <div class="form-group">
+        <label>Fornecedor</label>
+        <select id="campo-fornecedor"></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvar()">Vincular</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/componentes_fornecedores.js"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from database import Base, engine
-from models import Usuario, Fornecedor, Componente, ComponenteFornecedor, Movimentacao
 from routes.usuarios import router as usuario_router
 from routes.componentes import router as componente_router
 from routes.fornecedores import router as fornecedor_router

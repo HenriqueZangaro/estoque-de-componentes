@@ -1,13 +1,14 @@
 from database import Base
-from sqlalchemy import Column
-from sqlalchemy import Integer, String, Float, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, DateTime
+from datetime import datetime
 
 class Usuario(Base):
     __tablename__ = "usuario"
     id = Column(Integer, primary_key=True)
     nome = Column(String(100))
     email = Column(String(100))
-    senha = Column(String(30))
+    senha = Column(String(255))
+    ativo = Column(Integer, default=1) # 1 para ativo, 0 para inativo
 
 
 class Componente(Base):
@@ -16,6 +17,8 @@ class Componente(Base):
     nome = Column(String(100))
     valor = Column(Float)
     descricao = Column(String(200))
+    quantidade_atual = Column(Integer, default=0)
+    estoque_minimo = Column(Integer, default=0)
 
 
 class Fornecedor(Base):
@@ -33,6 +36,16 @@ class ComponenteFornecedor(Base):
     id_fornecedor = Column(Integer, ForeignKey("fornecedor.id"), primary_key=True)
 
 
+class Log(Base):
+    __tablename__ = "log"
+    id = Column(Integer, primary_key=True)
+    id_usuario = Column(Integer, ForeignKey("usuario.id"))
+    acao = Column(String(255))
+    entidade = Column(String(50))
+    id_entidade = Column(Integer)
+    data = Column(DateTime, default=datetime.utcnow)
+
+
 class Movimentacao(Base):
     __tablename__ = "movimentacao"
     id = Column(Integer, primary_key=True)
@@ -42,4 +55,3 @@ class Movimentacao(Base):
     quantidade = Column(Integer)
     valor = Column(Float)
     data = Column(Date)
-

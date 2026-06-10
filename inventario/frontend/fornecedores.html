@@ -33,7 +33,12 @@
       </a>
       <a href="componentes_fornecedores.html" class="nav-item">
         <span class="nav-icon">⬡</span> Comp. × Fornecedor
+      </a>
+      <div style="margin-top: auto; padding-top: 1rem;">
+        <a href="#" class="nav-item" onclick="logout()">
+          <span class="nav-icon">⏻</span> Sair
         </a>
+      </div>
     </nav>
   </aside>
 
@@ -44,6 +49,10 @@
         Fornecedores
       </div>
       <div class="topbar-right">
+        <div class="user-info" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--muted); font-size: 0.8rem;">// logado como</span>
+          <span id="nome-usuario-logado" style="font-weight: 600; color: var(--primary);">...</span>
+        </div>
         <button class="btn btn-primary" onclick="abrirModal()">+ Novo Fornecedor</button>
       </div>
     </div>
@@ -68,6 +77,12 @@
             <tr><td colspan="6" style="color:var(--muted);text-align:center">Carregando...</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="pagination" style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; align-items: center;">
+          <button id="btn-anterior" class="btn" onclick="paginar(-1)" disabled style="opacity: 0.5;">Anterior</button>
+          <span id="info-paginacao" class="logo-tag" style="font-size: 12px;">Página 1</span>
+          <button id="btn-proximo" class="btn" onclick="paginar(1)">Próximo</button>
       </div>
     </div>
   </main>
@@ -103,6 +118,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/api.js"></script>
   <script src="js/fornecedores.js"></script>
 </body>
 </html>

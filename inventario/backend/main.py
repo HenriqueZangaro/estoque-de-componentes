@@ -5,6 +5,10 @@ from routes.componentes import router as componente_router
 from routes.fornecedores import router as fornecedor_router
 from routes.movimentacoes import router as movimentacao_router
 from routes.componentes_fornecedores import router as componenteFornecedor_router
+from routes.auth import router as auth_router
+from routes.me import router as me_router
+from routes.stats import router as stats_router
+from routes.logs import router as logs_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -19,6 +23,10 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+app.include_router(auth_router)
+app.include_router(me_router)
+app.include_router(stats_router)
+app.include_router(logs_router)
 app.include_router(usuario_router)
 app.include_router(componente_router)
 app.include_router(fornecedor_router)

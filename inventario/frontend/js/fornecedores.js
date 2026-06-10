@@ -1,17 +1,24 @@
-const API = 'http://localhost:8000';
 let editandoId = null;
+let paginaAtual = 1;
+const itensPorPagina = 10;
+let totalItens = 0;
 
 async function carregarFornecedores() {
-  const res = await fetch(`${API}/fornecedores`);
+  const skip = (paginaAtual - 1) * itensPorPagina;
+  const res = await apiFetch(`/fornecedores?skip=${skip}&limit=${itensPorPagina}`);
   const data = await res.json();
+  
+  totalItens = data.total || 0;
+  const fornecedores = data.items || [];
+  
   const tbody = document.getElementById('tabela-fornecedores');
 
-  if (data.length === 0) {
+  if (!fornecedores || fornecedores.length === 0) {
     tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center">Nenhum fornecedor cadastrado.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = data.map(f => `
+  tbody.innerHTML = fornecedores.map(f => `
     <tr>
       <td style="font-family:'Share Tech Mono',monospace;color:var(--muted)">#${f.id}</td>
       <td>${f.nome}</td>
@@ -24,6 +31,26 @@ async function carregarFornecedores() {
       </td>
     </tr>
   `).join('');
+
+  atualizarControlesPaginacao();
+}
+
+function atualizarControlesPaginacao() {
+    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
+    const info = document.getElementById('info-paginacao');
+    if (!info) return;
+
+    info.textContent = `Página ${paginaAtual} de ${totalPaginas || 1}`;
+    document.getElementById('btn-anterior').disabled = paginaAtual === 1;
+    document.getElementById('btn-proximo').disabled = paginaAtual >= totalPaginas;
+    
+    document.getElementById('btn-anterior').style.opacity = paginaAtual === 1 ? 0.5 : 1;
+    document.getElementById('btn-proximo').style.opacity = paginaAtual >= totalPaginas ? 0.5 : 1;
+}
+
+function paginar(direcao) {
+    paginaAtual += direcao;
+    carregarFornecedores();
 }
 
 function abrirModal() {
@@ -60,12 +87,11 @@ async function salvar() {
     telefone: document.getElementById('campo-telefone').value,
   };
 
-  const url = editandoId ? `${API}/fornecedores/${editandoId}` : `${API}/fornecedores`;
+  const endpoint = editandoId ? `/fornecedores/${editandoId}` : `/fornecedores`;
   const method = editandoId ? 'PUT' : 'POST';
 
-  const res = await fetch(url, {
+  const res = await apiFetch(endpoint, {
     method,
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
 
@@ -74,13 +100,14 @@ async function salvar() {
     carregarFornecedores();
     mostrarToast(editandoId ? 'Fornecedor atualizado!' : 'Fornecedor criado!');
   } else {
-    mostrarToast('Erro ao salvar.', true);
+    const errorData = await res.json();
+    mostrarToast(errorData.detail || 'Erro ao salvar.', true);
   }
 }
 
 async function deletar(id) {
   if (!confirm('Deletar este fornecedor?')) return;
-  const res = await fetch(`${API}/fornecedores/${id}`, { method: 'DELETE' });
+  const res = await apiFetch(`/fornecedores/${id}`, { method: 'DELETE' });
   if (res.ok) {
     carregarFornecedores();
     mostrarToast('Fornecedor deletado.');

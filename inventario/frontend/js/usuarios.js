@@ -1,27 +1,41 @@
-const API = 'http://localhost:8000';
 let editandoId = null;
 
 async function carregarUsuarios() {
-  const res = await fetch(`${API}/usuarios`);
+  const res = await apiFetch('/usuarios');
   const data = await res.json();
+  
+  const resMe = await apiFetch('/me');
+  const me = await resMe.json();
+  const souAdmin = me.email === 'admin@admin.com';
+
   const tbody = document.getElementById('tabela-usuarios');
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center">Nenhum usuário cadastrado.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = data.map(u => `
-    <tr>
-      <td style="font-family:'Share Tech Mono',monospace;color:var(--muted)">#${u.id}</td>
-      <td>${u.nome}</td>
-      <td style="color:var(--muted)">${u.email}</td>
-      <td style="display:flex;gap:8px">
-        <button class="btn btn-edit" onclick="abrirEdicao(${u.id}, '${u.nome}', '${u.email}')">Editar</button>
-        <button class="btn btn-danger" onclick="deletar(${u.id})">Deletar</button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = data.map(u => {
+    const isAdmin = u.email === 'admin@admin.com';
+    const nomeStyle = isAdmin ? 'color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);' : '';
+    const adminSymbol = isAdmin ? '<span title="Administrador" style="margin-left: 8px; cursor: help;">👑</span>' : '';
+    
+    const botoes = `
+      <button class="btn btn-edit" onclick="abrirEdicao(${u.id}, '${u.nome}', '${u.email}')">Editar</button>
+      ${souAdmin && !isAdmin ? `<button class="btn btn-danger" onclick="deletar(${u.id})">Deletar</button>` : ''}
+    `;
+
+    return `
+      <tr>
+        <td style="font-family:'Share Tech Mono',monospace;color:var(--muted)">#${u.id}</td>
+        <td style="${nomeStyle}">${u.nome}${adminSymbol}</td>
+        <td style="color:var(--muted)">${u.email}</td>
+        <td style="display:flex;gap:8px">
+          ${botoes}
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function abrirModal() {
@@ -55,27 +69,29 @@ async function salvar() {
     senha: document.getElementById('campo-senha').value,
   };
 
-  const url = editandoId ? `${API}/usuarios/${editandoId}` : `${API}/usuarios`;
+  const endpoint = editandoId ? `/usuarios/${editandoId}` : `/usuarios`;
   const method = editandoId ? 'PUT' : 'POST';
 
-  const res = await fetch(url, {
+  const forceToken = !!editandoId;
+
+  const res = await apiFetch(endpoint, {
     method,
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  });
+  }, forceToken);
 
   if (res.ok) {
     fecharModal();
     carregarUsuarios();
     mostrarToast(editandoId ? 'Usuário atualizado!' : 'Usuário criado!');
   } else {
-    mostrarToast('Erro ao salvar.', true);
+    const errorData = await res.json();
+    mostrarToast(errorData.detail || 'Erro ao salvar.', true);
   }
 }
 
 async function deletar(id) {
   if (!confirm('Deletar este usuário?')) return;
-  const res = await fetch(`${API}/usuarios/${id}`, { method: 'DELETE' });
+  const res = await apiFetch(`/usuarios/${id}`, { method: 'DELETE' });
   if (res.ok) {
     carregarUsuarios();
     mostrarToast('Usuário deletado.');

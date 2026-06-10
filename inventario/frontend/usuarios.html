@@ -33,7 +33,12 @@
       </a>
       <a href="componentes_fornecedores.html" class="nav-item">
         <span class="nav-icon">⬡</span> Comp. × Fornecedor
+      </a>
+      <div style="margin-top: auto; padding-top: 1rem;">
+        <a href="#" class="nav-item" onclick="logout()">
+          <span class="nav-icon">⏻</span> Sair
         </a>
+      </div>
     </nav>
   </aside>
 
@@ -44,6 +49,10 @@
         Usuários
       </div>
       <div class="topbar-right">
+        <div class="user-info" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--muted); font-size: 0.8rem;">// logado como</span>
+          <span id="nome-usuario-logado" style="font-weight: 600; color: var(--primary);">...</span>
+        </div>
         <button class="btn btn-primary" onclick="abrirModal()">+ Novo Usuário</button>
       </div>
     </div>
@@ -97,6 +106,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/api.js"></script>
   <script src="js/usuarios.js"></script>
 </body>
 </html>

@@ -1,45 +1,58 @@
-const API = 'http://localhost:8000';
-
 let componentes = [];
 let fornecedores = [];
 
 async function carregarDados() {
-  const [resC, resF] = await Promise.all([
-    fetch(`${API}/componentes`),
-    fetch(`${API}/fornecedores`),
-  ]);
-  componentes = await resC.json();
-  fornecedores = await resF.json();
+  try {
+    const [resC, resF] = await Promise.all([
+      apiFetch('/componentes?limit=1000'),
+      apiFetch('/fornecedores?limit=1000'),
+    ]);
+    const dataC = await resC.json();
+    const dataF = await resF.json();
+    
+    componentes = dataC.items || [];
+    fornecedores = dataF.items || [];
 
-  const selectC = document.getElementById('campo-componente');
-  const selectF = document.getElementById('campo-fornecedor');
+    const selectC = document.getElementById('campo-componente');
+    const selectF = document.getElementById('campo-fornecedor');
 
-  selectC.innerHTML = componentes.map(c =>
-    `<option value="${c.id}">${c.nome}</option>`
-  ).join('');
+    if (selectC) {
+      selectC.innerHTML = componentes.map(c =>
+        `<option value="${c.id}">${c.nome}</option>`
+      ).join('');
+    }
 
-  selectF.innerHTML = fornecedores.map(f =>
-    `<option value="${f.id}">${f.nome}</option>`
-  ).join('');
+    if (selectF) {
+      selectF.innerHTML = fornecedores.map(f =>
+        `<option value="${f.id}">${f.nome}</option>`
+      ).join('');
+    }
 
-  carregarRelacoes();
+    carregarRelacoes();
+  } catch (err) {
+    console.error("Erro ao carregar dados:", err);
+  }
 }
 
 async function carregarRelacoes() {
-  const res = await fetch(`${API}/componenteFornecedor`);
+  const res = await apiFetch('/componenteFornecedor');
   const data = await res.json();
   const tbody = document.getElementById('tabela-relacoes');
 
-  if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted);text-align:center">Nenhuma relação cadastrada.</td></tr>';
+  if (!data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted);text-align:center">Nenhuma relação encontrada.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = data.map(r => {
-    const componente = componentes.find(c => c.id === r.id_componente);
-    const fornecedor = fornecedores.find(f => f.id === r.id_fornecedor);
-    const nomeComponente = componente ? componente.nome : `#${r.id_componente}`;
-    const nomeFornecedor = fornecedor ? fornecedor.nome : `#${r.id_fornecedor}`;
+  window.todasRelacoes = data;
+  renderizarRelacoes(data);
+}
+
+function renderizarRelacoes(lista) {
+  const tbody = document.getElementById('tabela-relacoes');
+  tbody.innerHTML = lista.map(r => {
+    const nomeComponente = r.nome_componente || `#${r.id_componente}`;
+    const nomeFornecedor = r.nome_fornecedor || `#${r.id_fornecedor}`;
 
     return `
       <tr>
@@ -48,6 +61,18 @@ async function carregarRelacoes() {
       </tr>
     `;
   }).join('');
+}
+
+function buscarLocal() {
+  const termo = document.getElementById('filtro-busca').value.toLowerCase();
+  if (!window.todasRelacoes) return;
+
+  const filtradas = window.todasRelacoes.filter(r => 
+    (r.nome_componente || "").toLowerCase().includes(termo) || 
+    (r.nome_fornecedor || "").toLowerCase().includes(termo)
+  );
+
+  renderizarRelacoes(filtradas);
 }
 
 function abrirModal() {
@@ -64,9 +89,8 @@ async function salvar() {
     id_fornecedor: parseInt(document.getElementById('campo-fornecedor').value),
   };
 
-  const res = await fetch(`${API}/componenteFornecedor`, {
+  const res = await apiFetch('/componenteFornecedor', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
 
@@ -75,12 +99,14 @@ async function salvar() {
     carregarRelacoes();
     mostrarToast('Relação cadastrada!');
   } else {
-    mostrarToast('Erro ao vincular.', true);
+    const errorData = await res.json();
+    mostrarToast(errorData.detail || 'Erro ao vincular.', true);
   }
 }
 
 function mostrarToast(msg, erro = false) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
   toast.textContent = msg;
   toast.className = 'toast' + (erro ? ' error' : '');
   toast.classList.add('show');

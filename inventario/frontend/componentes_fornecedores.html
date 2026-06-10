@@ -34,6 +34,11 @@
         <span class="nav-icon">⬡</span> Comp. × Fornecedor
         <span class="status-dot"></span>
       </a>
+      <div style="margin-top: auto; padding-top: 1rem;">
+        <a href="#" class="nav-item" onclick="logout()">
+          <span class="nav-icon">⏻</span> Sair
+        </a>
+      </div>
     </nav>
   </aside>
 
@@ -44,6 +49,10 @@
         Componentes × Fornecedores
       </div>
       <div class="topbar-right">
+        <div class="user-info" style="margin-right: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--muted); font-size: 0.8rem;">// logado como</span>
+          <span id="nome-usuario-logado" style="font-weight: 600; color: var(--primary);">...</span>
+        </div>
         <button class="btn btn-primary" onclick="abrirModal()">+ Nova Relação</button>
       </div>
     </div>
@@ -51,6 +60,9 @@
     <div class="content">
       <div class="section-header">
         <div class="section-label">// vínculos cadastrados</div>
+        <div class="search-bar">
+          <input type="text" id="filtro-busca" placeholder="Filtrar por nome..." style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; width: 250px;" oninput="buscarLocal()">
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -91,6 +103,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/api.js"></script>
   <script src="js/componentes_fornecedores.js"></script>
 </body>
 </html>

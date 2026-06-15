@@ -89,7 +89,7 @@ estoque-de-componentes/
     │   ├── main.py              # Ponto de entrada da API
     │   ├── database.py          # Configuração do banco de dados
     │   ├── models.py            # Modelos SQLAlchemy (tabelas)
-    │   ├── shemas.py            # Schemas Pydantic (validação)
+    │   ├── schemas.py           # Schemas Pydantic (validação)
     │   ├── requirements.txt     # Dependências Python
     │   ├── .env.example         # Exemplo de variáveis de ambiente
     │   └── routes/

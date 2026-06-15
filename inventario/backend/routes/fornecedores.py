@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
-import shemas
+import schemas
 import models
 from auth import obter_usuario_atual
 from utils import adicionar_log
@@ -18,16 +18,16 @@ def buscarFornecedores(
     items = db.query(models.Fornecedor).offset(skip).limit(limit).all()
     return {"total": total, "items": items}
 
-@router.get("/fornecedores/{id}", response_model=shemas.FornecedorResponse)
+@router.get("/fornecedores/{id}", response_model=schemas.FornecedorResponse)
 def buscarFornecedorPorId(id: int, db: Session = Depends(get_db)):
     fornecedor = db.query(models.Fornecedor).filter(models.Fornecedor.id == id).first()
     if not fornecedor:
         raise HTTPException(status_code=404, detail="Fornecedor nao encontrado")
     return fornecedor
 
-@router.post("/fornecedores", response_model=shemas.FornecedorResponse)
+@router.post("/fornecedores", response_model=schemas.FornecedorResponse)
 def criarFornecedor(
-    fornecedor: shemas.FornecedorCreate, 
+    fornecedor: schemas.FornecedorCreate, 
     db: Session = Depends(get_db),
     usuario_atual: models.Usuario = Depends(obter_usuario_atual)
 ):
@@ -44,9 +44,9 @@ def criarFornecedor(
     adicionar_log(db, usuario_atual.id, f"Criou fornecedor {novoFornecedor.nome}", "Fornecedor", novoFornecedor.id)
     return novoFornecedor
 
-@router.put("/fornecedores/{id}", response_model=shemas.FornecedorResponse)
+@router.put("/fornecedores/{id}", response_model=schemas.FornecedorResponse)
 def atualizarFornecedor(
-    fornecedor: shemas.FornecedorCreate, 
+    fornecedor: schemas.FornecedorCreate, 
     id: int, 
     db: Session = Depends(get_db),
     usuario_atual: models.Usuario = Depends(obter_usuario_atual)

@@ -2,26 +2,26 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
 import models
-import shemas
+import schemas
 from auth import gerar_hash_senha, obter_usuario_atual
 
 router = APIRouter()
 
-@router.get("/usuarios", response_model=list[shemas.UsuarioResponse])
+@router.get("/usuarios", response_model=list[schemas.UsuarioResponse])
 def buscarUsuarios(db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(obter_usuario_atual)):
-    # Retorna apenas usuários ativos para a gestão
+
     usuarios = db.query(models.Usuario).filter(models.Usuario.ativo == 1).all()
     for u in usuarios:
         u.is_admin = (u.email == "admin@admin.com")
     return usuarios
 
-@router.post("/usuarios", response_model=shemas.UsuarioResponse)
-def criarUsuario(usuario: shemas.UsuarioCreate, db: Session = Depends(get_db)):
-    # Verifica se o email já existe (mesmo inativos não podem repetir email)
+@router.post("/usuarios", response_model=schemas.UsuarioResponse)
+def criarUsuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+
     usuario_existente = db.query(models.Usuario).filter(models.Usuario.email == usuario.email).first()
     if usuario_existente:
         if usuario_existente.ativo == 0:
-            # Reativa usuário se já existiu
+
             usuario_existente.nome = usuario.nome
             usuario_existente.senha = gerar_hash_senha(usuario.senha)
             usuario_existente.ativo = 1
@@ -39,7 +39,7 @@ def criarUsuario(usuario: shemas.UsuarioCreate, db: Session = Depends(get_db)):
     novo_usuario.is_admin = (novo_usuario.email == "admin@admin.com")
     return novo_usuario
 
-@router.get("/usuarios/{id}", response_model=shemas.UsuarioResponse)
+@router.get("/usuarios/{id}", response_model=schemas.UsuarioResponse)
 def buscarUsuariosPorId(id: int, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(obter_usuario_atual)):
     usuario = db.query(models.Usuario).filter(models.Usuario.id == id).first()
     if not usuario:
@@ -49,7 +49,7 @@ def buscarUsuariosPorId(id: int, db: Session = Depends(get_db), usuario_atual: m
 
 @router.delete("/usuarios/{id}")
 def deletar_usuario(id: int, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(obter_usuario_atual)):
-    # APENAS ADMIN PODE DELETAR
+
     if usuario_atual.email != "admin@admin.com":
         raise HTTPException(status_code=403, detail="Apenas o administrador pode deletar usuários")
         
@@ -64,8 +64,8 @@ def deletar_usuario(id: int, db: Session = Depends(get_db), usuario_atual: model
     db.commit()
     return {"mensagem": "Usuário desativado com sucesso (histórico preservado)"}
 
-@router.put("/usuarios/{id}", response_model=shemas.UsuarioResponse)
-def atualizar_usuario(usuario: shemas.UsuarioCreate, id: int, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(obter_usuario_atual)):
+@router.put("/usuarios/{id}", response_model=schemas.UsuarioResponse)
+def atualizar_usuario(usuario: schemas.UsuarioCreate, id: int, db: Session = Depends(get_db), usuario_atual: models.Usuario = Depends(obter_usuario_atual)):
     usuario_atualizar = db.query(models.Usuario).filter(models.Usuario.id == id).first()
     if not usuario_atualizar:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")

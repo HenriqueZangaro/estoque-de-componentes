@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-import shemas
+import schemas
 import models
 from auth import obter_usuario_atual
 from typing import List
 
 router = APIRouter(dependencies=[Depends(obter_usuario_atual)])
 
-@router.post("/componenteFornecedor", response_model=shemas.ComponenteFornecedorResponse)
-def componenteFornecedorCriar(componenteFornecedor: shemas.ComponenteFornecedorCreate, db: Session = Depends(get_db)):
+@router.post("/componenteFornecedor", response_model=schemas.ComponenteFornecedorResponse)
+def componenteFornecedorCriar(componenteFornecedor: schemas.ComponenteFornecedorCreate, db: Session = Depends(get_db)):
     componenteVerificar = db.query(models.Componente).filter(models.Componente.id == componenteFornecedor.id_componente).first()
     if not componenteVerificar:
         raise HTTPException(status_code=404, detail="Componente nao encontrado")
@@ -28,7 +28,7 @@ def componenteFornecedorCriar(componenteFornecedor: shemas.ComponenteFornecedorC
     
     return nova_relacao
 
-@router.get("/componenteFornecedor", response_model=List[shemas.ComponenteFornecedorResponse])
+@router.get("/componenteFornecedor", response_model=List[schemas.ComponenteFornecedorResponse])
 def buscarComponenteFornecedorTodos(db: Session = Depends(get_db)):
     resultados = db.query(
         models.ComponenteFornecedor,
@@ -46,7 +46,7 @@ def buscarComponenteFornecedorTodos(db: Session = Depends(get_db)):
         
     return items
 
-@router.get("/componenteFornecedor/{id_componente}", response_model=List[shemas.ComponenteFornecedorResponse])
+@router.get("/componenteFornecedor/{id_componente}", response_model=List[schemas.ComponenteFornecedorResponse])
 def buscarFornecedoresCOmponenteEspecifico(id_componente: int, db: Session = Depends(get_db)):
     resultados = db.query(
         models.ComponenteFornecedor,

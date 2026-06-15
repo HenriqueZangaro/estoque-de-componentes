@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from typing import Optional, List
 from database import get_db
-import shemas
+import schemas
 import models
 from auth import obter_usuario_atual
 from utils import adicionar_log
-from typing import List
 
 router = APIRouter()
 
-@router.post("/movimentacoes", response_model=shemas.MovimentacaoResponse)
+@router.post("/movimentacoes", response_model=schemas.MovimentacaoResponse)
 def criarMovimentacao(
-    movimentacao: shemas.MovimentacaoCreate, 
+    movimentacao: schemas.MovimentacaoCreate, 
     db: Session = Depends(get_db),
     usuario_atual: models.Usuario = Depends(obter_usuario_atual)
 ):
@@ -19,10 +19,10 @@ def criarMovimentacao(
     if not componente:
         raise HTTPException(status_code=404, detail="Componente nao encontrado")
     
-    # Lógica de Controle de Estoque
-    if movimentacao.tipo == 1: # Entrada
+
+    if movimentacao.tipo == 1:
         componente.quantidade_atual += movimentacao.quantidade
-    else: # Saída
+    else:
         if componente.quantidade_atual < movimentacao.quantidade:
             raise HTTPException(status_code=400, detail=f"Estoque insuficiente. Disponível: {componente.quantidade_atual}")
         componente.quantidade_atual -= movimentacao.quantidade
@@ -39,7 +39,7 @@ def criarMovimentacao(
     db.commit()
     db.refresh(movimentacaoCriar)
     
-    # Log de Auditoria
+
     tipo_str = "Entrada" if movimentacao.tipo == 1 else "Saída"
     adicionar_log(db, usuario_atual.id, f"Registrou {tipo_str} de {movimentacao.quantidade} unidades", "Movimentacao", movimentacaoCriar.id)
     
@@ -75,4 +75,4 @@ def buscarMovimentacoes(
         items.append(mov)
         
     return {"total": total, "items": items}
-from typing import Optional
+

@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from database import get_db
 import models
-import shemas
+import schemas
 from auth import verificar_senha, criar_token_acesso, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter()
 
-@router.post("/login", response_model=shemas.Token)
+@router.post("/login", response_model=schemas.Token)
 async def login_para_obter_token(
     db: Session = Depends(get_db), 
     form_data: OAuth2PasswordRequestForm = Depends()

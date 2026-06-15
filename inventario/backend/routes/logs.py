@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from database import get_db
 import models
-import shemas
+import schemas
 from auth import obter_usuario_atual
 
 router = APIRouter(dependencies=[Depends(obter_usuario_atual)])

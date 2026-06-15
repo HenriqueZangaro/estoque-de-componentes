@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
-import shemas
+from typing import Optional
+import schemas
 import models
 from auth import obter_usuario_atual
 from utils import adicionar_log
@@ -22,18 +23,17 @@ def buscarComponentes(
     total = query.count()
     items = query.offset(skip).limit(limit).all()
     return {"total": total, "items": items}
-from typing import Optional
 
-@router.get("/componentes/{id}", response_model=shemas.ComponenteResponse)
+@router.get("/componentes/{id}", response_model=schemas.ComponenteResponse)
 def buscarComponentePorId(id: int, db: Session = Depends(get_db)):
     componente = db.query(models.Componente).filter(models.Componente.id == id).first()
     if not componente:
         raise HTTPException(status_code=404, detail="Componente nao encontrado")
     return componente
 
-@router.post("/componentes", response_model=shemas.ComponenteResponse)
+@router.post("/componentes", response_model=schemas.ComponenteResponse)
 def criarComponente(
-    componente: shemas.ComponenteCreate, 
+    componente: schemas.ComponenteCreate, 
     db: Session = Depends(get_db),
     usuario_atual: models.Usuario = Depends(obter_usuario_atual)
 ):
@@ -72,9 +72,9 @@ def deletarComponente(
     adicionar_log(db, usuario_atual.id, f"Deletou componente {nome_comp}", "Componente", id)
     return {"mensagem": "Componente deletado com sucesso"}
 
-@router.put("/componentes/{id}", response_model=shemas.ComponenteResponse)
+@router.put("/componentes/{id}", response_model=schemas.ComponenteResponse)
 def atualizarComponente(
-    componente: shemas.ComponenteCreate, 
+    componente: schemas.ComponenteCreate, 
     id: int, 
     db: Session = Depends(get_db),
     usuario_atual: models.Usuario = Depends(obter_usuario_atual)
